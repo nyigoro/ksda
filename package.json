@@ -1,0 +1,60 @@
+{
+  "name": "ksda-songs",
+  "version": "1.0.0",
+  "description": "Kenyan SDA Songs Website - A community platform for Seventh-day Adventist gospel songs from Kenya",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev & vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler pages deploy dist",
+    "db:migrate": "wrangler d1 execute ksda-songs-db --file=./db/migrations/001_initial_schema.sql",
+    "db:seed": "wrangler d1 execute ksda-songs-db --file=./db/seed.sql",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "lucide-react": "^0.525.0",
+    "react-router-dom": "^6.8.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.27",
+    "prettier": "^3.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.5",
+    "wrangler": "^4.25.1",
+    "@cloudflare/workers-types": "^4.20240529.0"
+  },
+  "keywords": [
+    "sda",
+    "kenya",
+    "gospel",
+    "songs",
+    "seventh-day-adventist",
+    "worship",
+    "swahili",
+    "church-music"
+  ],
+  "author": "KSDA Songs Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyigoro/ksda.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nyigoro/ksda/issues"
+  },
+  "homepage": "https://github.com/nyigoro/ksda#readme"
+}

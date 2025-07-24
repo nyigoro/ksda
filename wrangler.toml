@@ -1,0 +1,14 @@
+name = "kenyan-sda-songs"
+main = "api/index.ts"
+compatibility_date = "2025-07-23"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kenyan-sda-songs"
+database_id = "8e492240-4004-41a9-a234-13402300c1f0"
+
+[build]
+command = "npm run build"
+
+[site]
+bucket = "./frontend/dist"
