@@ -67,9 +67,6 @@ const LyricsLibrary: React.FC = () => {
                   <h2 className="text-3xl font-bold text-secondary dark:text-secondary-light">{song.title}</h2>
                   <p className="text-neutral-600 text-lg dark:text-neutral-400">by {song.artist}</p>
                 </div>
-                <Link to={`/add-song/${song.id}`} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-warning focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent dark:bg-accent dark:hover:bg-warning dark:focus:ring-accent" aria-label={`Edit lyrics for ${song.title}`}>
-                  Edit Lyrics
-                </Link>
               </div>
               <div className="typography">
                 <pre className="whitespace-pre-wrap font-sans text-neutral-800 text-base leading-relaxed dark:text-neutral-200">{song.lyrics}</pre>

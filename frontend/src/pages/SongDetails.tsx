@@ -85,8 +85,8 @@ export default function SongDetails() {
           <iframe
             width="100%"
             height="315"
-            src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}`}
-            title={song.title}
+            src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
+            title={`YouTube video player for ${song.title}`}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -98,9 +98,6 @@ export default function SongDetails() {
       <div className="flex justify-center space-x-4 mt-8">
         <Link to={`/songs/${song.id}/lyrics`} className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-secondary-dark dark:focus:ring-primary-light" aria-label={`View full lyrics for ${song.title}`}>
           View Full Lyrics
-        </Link>
-        <Link to={`/add-song/${song.id}`} className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-accent hover:bg-warning focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent dark:bg-accent dark:hover:bg-warning dark:focus:ring-accent" aria-label={`Edit song ${song.title}`}>
-          Edit Song
         </Link>
         <button
           onClick={handleLikeToggle}

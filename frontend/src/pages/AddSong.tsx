@@ -55,22 +55,22 @@ const AddSong: React.FC = () => {
     setMessage(null);
 
     const songData = {
-      title,
-      artist,
-      youtube_link: youtubeLink,
-      lyrics,
-      composer,
-      language,
-      region,
-      category,
-      tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag !== ''),
-      duration: duration === '' ? undefined : Number(duration),
+      title: title || null,
+      artist: artist || null,
+      youtube_link: youtubeLink || null,
+      lyrics: lyrics || null,
+      composer: composer || null,
+      language: language || null,
+      region: region || null,
+      category: category || null,
+      tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '').join(',') || null,
+      duration: duration === '' ? null : Number(duration),
       is_featured: isFeatured,
-      status,
+      status: status || null,
     };
 
     const method = id ? 'PUT' : 'POST';
-    const url = id ? `/api/songs/${id}` : '/api/songs';
+    const url = id ? `/songs/${id}` : '/songs';
 
     console.log("Submitting song data:", songData);
     console.log("Method:", method, "URL:", url);

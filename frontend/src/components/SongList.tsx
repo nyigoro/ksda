@@ -46,7 +46,7 @@ const SongList: React.FC<SongListProps> = ({ songs }) => {
             )}
 
             <p className="mt-4 text-neutral-700 leading-relaxed line-clamp-3 dark:text-neutral-300">
-              {song.lyrics.slice(0, 200)}...
+              {song.lyrics ? `${song.lyrics.slice(0, 200)}...` : 'No lyrics available.'}
             </p>
             <div className="mt-4 text-right">
               <Link to={`/songs/${song.id}`} className="text-primary hover:underline font-medium dark:text-primary-light dark:hover:text-secondary-light">

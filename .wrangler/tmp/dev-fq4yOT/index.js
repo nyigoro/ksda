@@ -6,15 +6,6 @@ var api_default = {
   async fetch(req, env) {
     const url = new URL(req.url);
     console.log("Worker received path:", url.pathname);
-    if (url.pathname === "/api/songs") {
-      const result = await env.DB.prepare(`SELECT id, title, artist, youtube_link, lyrics FROM songs LIMIT 20`).all();
-      return Response.json(result.results);
-    }
-    if (url.pathname.startsWith("/api/songs/")) {
-      const id = url.pathname.split("/").pop();
-      const result = await env.DB.prepare(`SELECT * FROM songs WHERE id = ?`).bind(id).first();
-      return result ? Response.json(result) : new Response("Not Found", { status: 404 });
-    }
     if (url.pathname === "/api/songs" && req.method === "POST") {
       try {
         const songData = await req.json();
@@ -83,6 +74,35 @@ var api_default = {
         }
         return Response.json({ success: false, error: errorMessage }, { status: 400 });
       }
+    }
+    if (url.pathname.startsWith("/api/songs/") && req.method === "DELETE") {
+      try {
+        const id = url.pathname.split("/").pop();
+        if (!id) {
+          return new Response("Song ID missing", { status: 400 });
+        }
+        const stmt = env.DB.prepare(`DELETE FROM songs WHERE id = ?`);
+        const result = await stmt.bind(id).run();
+        if (result.changes === 0) {
+          return new Response("Song not found", { status: 404 });
+        }
+        return Response.json({ success: true, message: "Song deleted successfully" }, { status: 200 });
+      } catch (e) {
+        let errorMessage = "An unknown error occurred";
+        if (e instanceof Error) {
+          errorMessage = e.message;
+        }
+        return Response.json({ success: false, error: errorMessage }, { status: 400 });
+      }
+    }
+    if (url.pathname === "/api/songs") {
+      const result = await env.DB.prepare(`SELECT id, title, artist, youtube_link, lyrics FROM songs LIMIT 20`).all();
+      return Response.json(result.results);
+    }
+    if (url.pathname.startsWith("/api/songs/")) {
+      const id = url.pathname.split("/").pop();
+      const result = await env.DB.prepare(`SELECT * FROM songs WHERE id = ?`).bind(id).first();
+      return result ? Response.json(result) : new Response("Not Found", { status: 404 });
     }
     return new Response("Hello from Worker");
   }

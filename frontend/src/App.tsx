@@ -1,6 +1,6 @@
-import { lazy, Suspense, useState, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { PlusCircle, BookOpen, Moon, Sun, Star } from 'lucide-react';
+import { PlusCircle, BookOpen, Moon, Sun, Star, Edit, Music } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -9,6 +9,8 @@ const AddSong = lazy(() => import('./pages/AddSong'));
 const LyricsPage = lazy(() => import('./pages/LyricsPage'));
 const LyricsLibrary = lazy(() => import('./pages/LyricsLibrary'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const SongManagement = lazy(() => import('./pages/SongManagement'));
+const AudioLibrary = lazy(() => import('./pages/AudioLibrary'));
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -58,6 +60,16 @@ function App() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/manage-songs" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="Manage songs">
+                    <Edit className="mr-1" size={18} aria-hidden="true" /> Manage Songs
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/audio-library" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="View audio library">
+                    <Music className="mr-1" size={18} aria-hidden="true" /> Audio Library
+                  </Link>
+                </li>
+                <li>
                   <button
                     onClick={toggleTheme}
                     className="p-2 rounded-full bg-gray-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-gray-300 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light"
@@ -77,10 +89,12 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/songs/:id" element={<SongDetails />} />
                 <Route path="/add-song" element={<AddSong />} />
-              <Route path="/add-song/:id" element={<AddSong />} />
+                <Route path="/add-song/:id" element={<AddSong />} />
                 <Route path="/songs/:id/lyrics" element={<LyricsPage />} />
                 <Route path="/lyrics-library" element={<LyricsLibrary />} />
                 <Route path="/favorites" element={<FavoritesPage />} />
+                <Route path="/manage-songs" element={<SongManagement />} />
+                <Route path="/audio-library" element={<AudioLibrary />} />
               </Routes>
             </ErrorBoundary>
           </Suspense>

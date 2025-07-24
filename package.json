@@ -16,8 +16,10 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/uuid": "^10.0.0",
     "lucide-react": "^0.525.0",
-    "react-router-dom": "^6.8.1"
+    "react-router-dom": "^6.8.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
