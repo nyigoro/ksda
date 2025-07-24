@@ -32,10 +32,10 @@ const SongList: React.FC<SongListProps> = ({ songs }) => {
             <p className="text-neutral-600 text-sm mb-4 dark:text-neutral-400">by {song.artist}</p>
             
             {song.youtube_link && (
-              <div className="mt-2 rounded-lg overflow-hidden">
+              <div className="mt-2 rounded-lg overflow-hidden aspect-w-16 aspect-h-9">
                 <iframe
                   width="100%"
-                  height="215"
+                  className="w-full h-full"
                   src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}`}
                   title={song.title}
                   frameBorder="0"
