@@ -64,7 +64,7 @@ function App() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/audio-library" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-300 dark:hover:text-primary-400" aria-label="View audio library">
+                  <Link to="/audio-library" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-400 dark:hover:text-primary-400" aria-label="View audio library">
                     <Music className="mr-1" size={18} aria-hidden="true" /> Audio Library
                   </Link>
                 </li>

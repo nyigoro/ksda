@@ -95,7 +95,7 @@ export default function SongDetails() {
       )}
 
       <div className="flex justify-center space-x-4 mt-8">
-        <Link to={`/songs/${song.id}/lyrics`} className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary-dark dark:hover:bg-secondary-dark dark:focus:ring-primary-light" aria-label={`View full lyrics for ${song.title}`}>
+        <Link to={`/songs/${song.id}/lyrics`} className="btn btn-primary" aria-label={`View full lyrics for ${song.title}`}>
           View Full Lyrics
         </Link>
         <button

@@ -52,7 +52,7 @@ export function SongCard({ song }: { song: Song }) {
         <pre className="mt-4 text-sm bg-gray-100 p-2 rounded-sm whitespace-pre-wrap line-clamp-3 dark:bg-neutral-700 dark:text-neutral-300">{song.lyrics}</pre>
       </Link>
       <div className="mt-2 text-right">
-        <Link to={`/songs/${song.id}`} className="text-primary hover:underline font-medium dark:text-primary-light dark:hover:text-secondary-light">
+        <Link to={`/songs/${song.id}`} className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors border border-neutral-300 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-600">
           Read More
         </Link>
       </div>
