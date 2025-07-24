@@ -1,5 +1,5 @@
 // src/pages/SongDetails.tsx
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 interface Song {
@@ -45,7 +45,14 @@ export default function SongDetails() {
       )}
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Lyrics</h2>
-      <pre className="whitespace-pre-wrap bg-gray-100 p-4 rounded text-gray-800">{song.lyrics}</pre>
+      <div className="bg-gray-100 p-4 rounded text-gray-800 max-h-60 overflow-y-auto">
+        <pre className="whitespace-pre-wrap font-sans text-base leading-relaxed">{song.lyrics}</pre>
+      </div>
+      <div className="text-center mt-4">
+        <Link to={`/songs/${song.id}/lyrics`} className="text-blue-600 hover:underline">
+          View Full Lyrics
+        </Link>
+      </div>
     </div>
   );
 }

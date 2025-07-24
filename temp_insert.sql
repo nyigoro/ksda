@@ -1,0 +1,2 @@
+INSERT INTO songs (title, artist, youtube_link, lyrics, language, category) VALUES ('Mimi Ni Wa Yesu', 'Ambassadors of Christ Choir', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Mimi ni wa Yesu, nimekombolewa kwa damu yake...', 'swahili', 'Praise & Worship');
+INSERT INTO songs (title, artist, youtube_link, lyrics, language, category) VALUES ('Tuujenge Ukuta', 'KING''S MINISTERS MELODIES', 'https://youtu.be/MnTf90GUNSQ?si=CtnuDEHx0hGYMPEw', 'Tuujenge ukuta wa Yerusalemu, kwa maombi na kwa bidii...', 'swahili', 'Praise & Worship');
