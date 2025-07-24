@@ -12,7 +12,7 @@ export function SongCard({ song }: { song: Song }) {
   const youtubeId = song.youtube_link?.split("v=")[1]?.substring(0, 11);
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-102 transition-all duration-300">
       <Link to={`/songs/${song.id}`} className="block">
         <h2 className="text-xl font-bold text-primary">{song.title}</h2>
         <p className="text-gray-600">{song.artist}</p>
@@ -26,7 +26,7 @@ export function SongCard({ song }: { song: Song }) {
             allowFullScreen
           />
         )}
-        <pre className="mt-2 text-sm bg-gray-100 p-2 rounded whitespace-pre-wrap">{song.lyrics}</pre>
+        <pre className="mt-2 text-sm bg-gray-100 p-2 rounded-sm whitespace-pre-wrap">{song.lyrics}</pre>
       </Link>
     </div>
   );

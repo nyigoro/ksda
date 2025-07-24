@@ -5,6 +5,7 @@ var __name = (target, value) => __defProp(target, "name", { value, configurable:
 var api_default = {
   async fetch(req, env) {
     const url = new URL(req.url);
+    console.log("Worker received path:", url.pathname);
     if (url.pathname === "/api/songs") {
       const result = await env.DB.prepare(`SELECT id, title, artist, youtube_link, lyrics FROM songs LIMIT 20`).all();
       return Response.json(result.results);
@@ -37,6 +38,44 @@ var api_default = {
           status
         ).run();
         return Response.json({ success: true, result }, { status: 201 });
+      } catch (e) {
+        let errorMessage = "An unknown error occurred";
+        if (e instanceof Error) {
+          errorMessage = e.message;
+        }
+        return Response.json({ success: false, error: errorMessage }, { status: 400 });
+      }
+    }
+    if (url.pathname.startsWith("/api/songs/") && req.method === "PUT") {
+      try {
+        const id = url.pathname.split("/").pop();
+        if (!id) {
+          return new Response("Song ID missing", { status: 400 });
+        }
+        const songData = await req.json();
+        const { title, artist, youtube_link, lyrics, composer, language, region, category, tags, duration, is_featured, status } = songData;
+        const stmt = env.DB.prepare(
+          `UPDATE songs SET title = ?, artist = ?, youtube_link = ?, lyrics = ?, composer = ?, language = ?, region = ?, category = ?, tags = ?, duration = ?, is_featured = ?, status = ? WHERE id = ?`
+        );
+        const result = await stmt.bind(
+          title,
+          artist,
+          youtube_link,
+          lyrics,
+          composer,
+          language,
+          region,
+          category,
+          tags,
+          duration,
+          is_featured,
+          status,
+          id
+        ).run();
+        if (result.changes === 0) {
+          return new Response("Song not found or no changes made", { status: 404 });
+        }
+        return Response.json({ success: true, result }, { status: 200 });
       } catch (e) {
         let errorMessage = "An unknown error occurred";
         if (e instanceof Error) {
@@ -90,7 +129,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-VLyp7D/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-aOlNPU/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -122,7 +161,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-VLyp7D/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-aOlNPU/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

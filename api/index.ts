@@ -21,6 +21,7 @@ interface SongData {
 export default {
   async fetch(req: Request, env: Env) {
     const url = new URL(req.url);
+    console.log("Worker received path:", url.pathname);
 
     if (url.pathname === "/api/songs") {
       const result = await env.DB.prepare(`SELECT id, title, artist, youtube_link, lyrics FROM songs LIMIT 20`).all();
@@ -50,6 +51,37 @@ export default {
         ).run();
 
         return Response.json({ success: true, result }, { status: 201 });
+      } catch (e: unknown) {
+        let errorMessage = "An unknown error occurred";
+        if (e instanceof Error) {
+          errorMessage = e.message;
+        }
+        return Response.json({ success: false, error: errorMessage }, { status: 400 });
+      }
+    }
+
+    if (url.pathname.startsWith("/api/songs/") && req.method === "PUT") {
+      try {
+        const id = url.pathname.split("/").pop();
+        if (!id) {
+          return new Response("Song ID missing", { status: 400 });
+        }
+        const songData: SongData = await req.json();
+        const { title, artist, youtube_link, lyrics, composer, language, region, category, tags, duration, is_featured, status } = songData;
+
+        const stmt = env.DB.prepare(
+          `UPDATE songs SET title = ?, artist = ?, youtube_link = ?, lyrics = ?, composer = ?, language = ?, region = ?, category = ?, tags = ?, duration = ?, is_featured = ?, status = ? WHERE id = ?`
+        );
+
+        const result = await stmt.bind(
+          title, artist, youtube_link, lyrics, composer, language, region, category, tags, duration, is_featured, status, id
+        ).run();
+
+        if (result.changes === 0) {
+          return new Response("Song not found or no changes made", { status: 404 });
+        }
+
+        return Response.json({ success: true, result }, { status: 200 });
       } catch (e: unknown) {
         let errorMessage = "An unknown error occurred";
         if (e instanceof Error) {

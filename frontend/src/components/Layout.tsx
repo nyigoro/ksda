@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-xs">
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link to="/" className="text-2xl font-bold text-gray-800">KSDA Songs</Link>

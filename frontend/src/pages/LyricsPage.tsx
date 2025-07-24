@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 interface Song {
   id: string;
@@ -38,33 +38,24 @@ const LyricsPage: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="text-center py-8">Loading lyrics...</div>;
+    return <div className="text-center py-8 text-info" aria-live="polite">Loading lyrics...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-8 text-error">Error: {error}</div>;
+    return <div className="text-center py-8 text-error" aria-live="polite">Error: {error}</div>;
   }
 
   if (!song) {
-    return <div className="text-center py-8">Song not found.</div>;
+    return <div className="text-center py-8" aria-live="polite">Song not found.</div>;
   }
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-4 text-primary">{song.title}</h1>
-      <p className="text-center text-gray-600 mb-6">by {song.artist}</p>
+      <h1 className="text-4xl font-extrabold text-center mb-4 text-primary dark:text-primary-light">{song.title}</h1>
+      <p className="text-center text-neutral-600 text-lg mb-6 dark:text-neutral-400">by {song.artist}</p>
       
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4 text-secondary">Lyrics</h2>
-        <pre className="whitespace-pre-wrap font-sans text-gray-800 text-base leading-relaxed">
-          {song.lyrics}
-        </pre>
-      </div>
-
-      <div className="text-center mt-8">
-        <Link to={`/songs/${song.id}`} className="text-primary hover:underline">
-          Back to Song Details
-        </Link>
+      <div className="bg-white p-8 rounded-lg shadow-lg typography dark:bg-neutral-800 dark:text-neutral-200">
+        <pre className="whitespace-pre-wrap font-sans text-neutral-800 text-base leading-relaxed dark:text-neutral-200">{song.lyrics}</pre>
       </div>
     </div>
   );

@@ -1,38 +1,89 @@
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { PlusCircle } from 'lucide-react';
-import Home from './pages/Home';
-import SongDetails from './pages/SongDetails';
-import AddSong from './pages/AddSong';
-import LyricsPage from './pages/LyricsPage';
+import { PlusCircle, BookOpen, Moon, Sun, Star } from 'lucide-react';
+import ErrorBoundary from './components/ErrorBoundary';
+
+const Home = lazy(() => import('./pages/Home'));
+const SongDetails = lazy(() => import('./pages/SongDetails'));
+const AddSong = lazy(() => import('./pages/AddSong'));
+const LyricsPage = lazy(() => import('./pages/LyricsPage'));
+const LyricsLibrary = lazy(() => import('./pages/LyricsLibrary'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 
 function App() {
+  const [theme, setTheme] = useState(() => {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return localStorage.getItem('theme') || 'light';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
   return (
     <Router>
-      <div className="min-h-screen bg-base-100">
-        <nav className="bg-primary shadow-md">
+      <div className="min-h-screen bg-base-100 dark:bg-neutral-900">
+        <nav className="bg-white shadow-sm dark:bg-neutral-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <Link to="/" className="text-white text-2xl font-bold">Kenyan SDA Songs</Link>
-              <ul className="flex space-x-4">
+              <Link to="/" className="text-2xl font-bold text-primary dark:text-primary-light">Kenyan SDA Songs</Link>
+              <ul className="flex space-x-4 items-center">
                 <li>
-                  <Link to="/" className="text-white hover:text-secondary">Home</Link>
+                  <Link to="/" className="text-neutral hover:text-primary dark:text-neutral-300 dark:hover:text-primary-light">Home</Link>
                 </li>
                 <li>
-                  <Link to="/add-song" className="text-white hover:text-secondary flex items-center">
-                    <PlusCircle className="mr-1" size={18} /> Add Song
+                  <Link to="/add-song" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="Add a new song">
+                    <PlusCircle className="mr-1" size={18} aria-hidden="true" /> Add Song
                   </Link>
+                </li>
+                <li>
+                  <Link to="/lyrics-library" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="View all lyrics">
+                    <BookOpen className="mr-1" size={18} aria-hidden="true" /> Lyrics Library
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/favorites" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="View favorite songs">
+                    <Star className="mr-1" size={18} aria-hidden="true" /> Favorites
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-full bg-gray-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-gray-300 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light"
+                    aria-label="Toggle theme"
+                  >
+                    {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                  </button>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/songs/:id" element={<SongDetails />} />
-            <Route path="/add-song" element={<AddSong />} />
-            <Route path="/songs/:id/lyrics" element={<LyricsPage />} />
-          </Routes>
+          <Suspense fallback={<div className="text-center py-8 text-info">Loading page...</div>}>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/songs/:id" element={<SongDetails />} />
+                <Route path="/add-song" element={<AddSong />} />
+              <Route path="/add-song/:id" element={<AddSong />} />
+                <Route path="/songs/:id/lyrics" element={<LyricsPage />} />
+                <Route path="/lyrics-library" element={<LyricsLibrary />} />
+                <Route path="/favorites" element={<FavoritesPage />} />
+              </Routes>
+            </ErrorBoundary>
+          </Suspense>
         </main>
       </div>
     </Router>
