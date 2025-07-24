@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { PlusCircle, BookOpen, Moon, Sun, Star, Edit, Music } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -13,69 +13,68 @@ const SongManagement = lazy(() => import('./pages/SongManagement'));
 const AudioLibrary = lazy(() => import('./pages/AudioLibrary'));
 
 function App() {
-  const [theme, setTheme] = useState(() => {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return localStorage.getItem('theme') || 'light';
-  });
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    if (theme === 'dark') {
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setIsDarkMode(prefersDarkMode);
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+  }, [isDarkMode]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+    setIsDarkMode(prevMode => !prevMode);
   };
 
   return (
     <Router>
-      <div className="min-h-screen bg-base-100 dark:bg-neutral-900">
+      <div className="min-h-screen bg-background text-foreground">
         <nav className="bg-white shadow-sm dark:bg-neutral-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <Link to="/" className="text-2xl font-bold text-primary dark:text-primary-light">Kenyan SDA Songs</Link>
+              <Link to="/" className="text-2xl font-bold text-primary-500 dark:text-primary-400">Kenyan SDA Songs</Link>
               <ul className="flex space-x-4 items-center">
                 <li>
-                  <Link to="/" className="text-neutral hover:text-primary dark:text-neutral-300 dark:hover:text-primary-light">Home</Link>
+                  <Link to="/" className="text-neutral-600 hover:text-primary-500 dark:text-neutral-300 dark:hover:text-primary-400">Home</Link>
                 </li>
                 <li>
-                  <Link to="/add-song" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="Add a new song">
+                  <Link to="/add-song" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-300 dark:hover:text-primary-400" aria-label="Add a new song">
                     <PlusCircle className="mr-1" size={18} aria-hidden="true" /> Add Song
                   </Link>
                 </li>
                 <li>
-                  <Link to="/lyrics-library" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="View all lyrics">
+                  <Link to="/lyrics-library" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-300 dark:hover:text-primary-400" aria-label="View all lyrics">
                     <BookOpen className="mr-1" size={18} aria-hidden="true" /> Lyrics Library
                   </Link>
                 </li>
                 <li>
-                  <Link to="/favorites" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="View favorite songs">
+                  <Link to="/favorites" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-300 dark:hover:text-primary-400" aria-label="View favorite songs">
                     <Star className="mr-1" size={18} aria-hidden="true" /> Favorites
                   </Link>
                 </li>
                 <li>
-                  <Link to="/manage-songs" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="Manage songs">
+                  <Link to="/manage-songs" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-300 dark:hover:text-primary-400" aria-label="Manage songs">
                     <Edit className="mr-1" size={18} aria-hidden="true" /> Manage Songs
                   </Link>
                 </li>
                 <li>
-                  <Link to="/audio-library" className="text-neutral hover:text-primary flex items-center dark:text-neutral-300 dark:hover:text-primary-light" aria-label="View audio library">
+                  <Link to="/audio-library" className="text-neutral-600 hover:text-primary-500 flex items-center dark:text-neutral-300 dark:hover:text-primary-400" aria-label="View audio library">
                     <Music className="mr-1" size={18} aria-hidden="true" /> Audio Library
                   </Link>
                 </li>
                 <li>
                   <button
                     onClick={toggleTheme}
-                    className="p-2 rounded-full bg-gray-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-gray-300 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light"
+                    className="p-2 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400"
                     aria-label="Toggle theme"
                   >
-                    {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   </button>
                 </li>
               </ul>

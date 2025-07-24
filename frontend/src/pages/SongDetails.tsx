@@ -21,7 +21,7 @@ export default function SongDetails() {
   const [relatedSongs, setRelatedSongs] = useState<Song[]>([]); // New state for related songs
 
   useEffect(() => {
-    fetch(`/songs/${id}`)
+    fetch(`/api/songs/${id}`)
       .then(res => res.json())
       .then(data => {
         setSong(data);
@@ -36,7 +36,7 @@ export default function SongDetails() {
     // Simulate fetching related songs
     // In a real app, you'd make an API call like `/songs/${id}/related`
     // For now, let's just return some dummy data or a subset of existing songs
-    fetch('/songs') // Fetch all songs for simulation
+    fetch('/api/songs') // Fetch all songs for simulation
       .then(res => res.json())
       .then(allSongs => {
         const filteredRelated = allSongs.filter((s: Song) => s.id !== id).slice(0, 3); // Get 3 random related songs
@@ -84,7 +84,6 @@ export default function SongDetails() {
         <div className="aspect-w-16 aspect-h-9 mb-6 rounded-lg overflow-hidden">
           <iframe
             width="100%"
-            height="315"
             src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
             title={`YouTube video player for ${song.title}`}
             frameBorder="0"

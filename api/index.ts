@@ -21,7 +21,7 @@ interface SongData {
 export default {
   async fetch(req: Request, env: Env) {
     const url = new URL(req.url);
-    console.log("Worker received path:", url.pathname);
+    console.log("Worker received request for:", url.pathname);
 
     if (url.pathname === "/api/songs" && req.method === "POST") {
       try {
@@ -102,9 +102,51 @@ export default {
       }
     }
 
-    if (url.pathname === "/api/songs") {
-      const result = await env.DB.prepare(`SELECT id, title, artist, youtube_link, lyrics FROM songs LIMIT 20`).all();
-      return Response.json(result.results);
+    if (url.pathname === "/api/songs" && req.method === "GET") {
+      try {
+        const { searchParams } = url;
+        const search = searchParams.get('search');
+        const language = searchParams.get('language');
+        const category = searchParams.get('category');
+        const limit = parseInt(searchParams.get('limit') || '10', 10);
+        const offset = parseInt(searchParams.get('offset') || '0', 10);
+
+        let query = 'SELECT * FROM songs';
+        const conditions = [];
+        const bindings = [];
+
+        if (search) {
+          conditions.push(`(title LIKE ? OR artist LIKE ?)`);
+          bindings.push(`%${search}%`, `%${search}%`);
+        }
+        if (language) {
+          conditions.push('language = ?');
+          bindings.push(language);
+        }
+        if (category) {
+          conditions.push('category = ?');
+          bindings.push(category);
+        }
+
+        if (conditions.length > 0) {
+          query += ` WHERE ${conditions.join(' AND ')}`;
+        }
+
+        query += ' ORDER BY title LIMIT ? OFFSET ?';
+        bindings.push(limit, offset);
+
+        const stmt = env.DB.prepare(query).bind(...bindings);
+        const { results } = await stmt.all();
+        
+        return Response.json(results);
+
+      } catch (e: unknown) {
+        let errorMessage = "An unknown error occurred";
+        if (e instanceof Error) {
+          errorMessage = e.message;
+        }
+        return Response.json({ success: false, error: errorMessage }, { status: 500 });
+      }
     }
 
     if (url.pathname.startsWith("/api/songs/")) {

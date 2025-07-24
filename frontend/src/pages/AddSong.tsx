@@ -70,7 +70,7 @@ const AddSong: React.FC = () => {
     };
 
     const method = id ? 'PUT' : 'POST';
-    const url = id ? `/songs/${id}` : '/songs';
+    const url = id ? `/api/songs/${id}` : '/api/songs';
 
     console.log("Submitting song data:", songData);
     console.log("Method:", method, "URL:", url);

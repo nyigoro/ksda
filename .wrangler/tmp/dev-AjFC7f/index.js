@@ -95,9 +95,44 @@ var api_default = {
         return Response.json({ success: false, error: errorMessage }, { status: 400 });
       }
     }
-    if (url.pathname === "/api/songs") {
-      const result = await env.DB.prepare(`SELECT id, title, artist, youtube_link, lyrics FROM songs LIMIT 20`).all();
-      return Response.json(result.results);
+    if (url.pathname === "/api/songs" && req.method === "GET") {
+      try {
+        const { searchParams } = url;
+        const search = searchParams.get("search");
+        const language = searchParams.get("language");
+        const category = searchParams.get("category");
+        const limit = parseInt(searchParams.get("limit") || "10", 10);
+        const offset = parseInt(searchParams.get("offset") || "0", 10);
+        let query = "SELECT * FROM songs";
+        const conditions = [];
+        const bindings = [];
+        if (search) {
+          conditions.push(`(title LIKE ? OR artist LIKE ?)`);
+          bindings.push(`%${search}%`, `%${search}%`);
+        }
+        if (language) {
+          conditions.push("language = ?");
+          bindings.push(language);
+        }
+        if (category) {
+          conditions.push("category = ?");
+          bindings.push(category);
+        }
+        if (conditions.length > 0) {
+          query += ` WHERE ${conditions.join(" AND ")}`;
+        }
+        query += " ORDER BY title LIMIT ? OFFSET ?";
+        bindings.push(limit, offset);
+        const stmt = env.DB.prepare(query).bind(...bindings);
+        const { results } = await stmt.all();
+        return Response.json(results);
+      } catch (e) {
+        let errorMessage = "An unknown error occurred";
+        if (e instanceof Error) {
+          errorMessage = e.message;
+        }
+        return Response.json({ success: false, error: errorMessage }, { status: 500 });
+      }
     }
     if (url.pathname.startsWith("/api/songs/")) {
       const id = url.pathname.split("/").pop();
@@ -108,7 +143,7 @@ var api_default = {
   }
 };
 
-// node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+// frontend/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
 var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
@@ -126,7 +161,7 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
 
-// node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+// frontend/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
 function reduceError(e) {
   return {
     name: e?.name,
@@ -149,14 +184,14 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-aOlNPU/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-452zh5/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = api_default;
 
-// node_modules/wrangler/templates/middleware/common.ts
+// frontend/node_modules/wrangler/templates/middleware/common.ts
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
@@ -181,7 +216,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-aOlNPU/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-452zh5/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

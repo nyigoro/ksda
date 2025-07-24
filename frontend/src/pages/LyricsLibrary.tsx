@@ -17,7 +17,7 @@ const LyricsLibrary: React.FC = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const response = await fetch('/songs');
+        const response = await fetch('/api/songs');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

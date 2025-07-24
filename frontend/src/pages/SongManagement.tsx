@@ -19,7 +19,7 @@ const SongManagement: React.FC = () => {
   const fetchSongs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/songs');
+      const response = await fetch('/api/songs');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -45,7 +45,7 @@ const SongManagement: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch(`/songs/${id}`, {
+      const response = await fetch(`/api/songs/${id}`, {
         method: 'DELETE',
       });
 

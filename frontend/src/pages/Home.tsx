@@ -55,7 +55,9 @@ const Home: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`/songs?${queryParams.toString()}`);
+      const url = `/api/songs?${queryParams.toString()}`;
+      console.log("Fetching from URL:", url);
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
