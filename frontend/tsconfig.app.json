@@ -6,7 +6,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["jest", "@testing-library/jest-dom"],
+    "types": ["jest", "@testing-library/jest-dom, wrangler types"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -30,6 +30,6 @@
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/*",
-    "src"
+    "src",
   ]
 }
