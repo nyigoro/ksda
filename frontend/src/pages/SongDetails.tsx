@@ -15,7 +15,7 @@ interface Song {
 export default function SongDetails() {
   const { id } = useParams();
   const [song, setSong] = useState<Song | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState(false); // New state for like functionality
   const [isFavorite, setIsFavorite] = useState(false); // New state for favorite functionality
   const [relatedSongs, setRelatedSongs] = useState<Song[]>([]); // New state for related songs
@@ -50,7 +50,7 @@ export default function SongDetails() {
       const newIsLiked = !prevIsLiked;
       // Simulate API call to update like status
       // In a real app, you'd send a POST/PUT request to your backend
-      console.log(`Song ${song?.title} ${newIsLiked ? 'liked' : 'unliked'}`);
+      console.log(`Song ${song?.title || ''} ${newIsLiked ? 'liked' : 'unliked'}`);
       localStorage.setItem(`liked-song-${id}`, String(newIsLiked));
       return newIsLiked;
     });
@@ -77,14 +77,14 @@ export default function SongDetails() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-lg shadow-lg dark:bg-neutral-800">
-      <h1 className="text-4xl font-extrabold mb-2 text-primary dark:text-primary-light">{song.title}</h1>
-      <p className="text-neutral-600 text-lg mb-4 dark:text-neutral-400">by {song.artist}</p>
+      <h1 className="text-4xl font-extrabold mb-2 text-primary dark:text-primary-light">{String(song.title)}</h1>
+      <p className="text-neutral-600 text-lg mb-4 dark:text-neutral-400">by {String(song.artist)}</p>
 
       {song.youtube_link && (
         <div className="aspect-w-16 aspect-h-9 mb-6 rounded-lg overflow-hidden">
           <iframe
             width="100%"
-            src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
+            src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link || '')}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
             title={`YouTube video player for ${song.title}`}
             
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

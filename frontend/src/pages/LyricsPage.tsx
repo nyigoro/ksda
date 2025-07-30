@@ -19,9 +19,9 @@ const LyricsPage: React.FC = () => {
       try {
         const response = await fetch(`/api/songs/${id}`);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${String(response.status)}`);
         }
-        const data = await response.json();
+        const data: Song = await response.json();
         setSong(data);
       } catch (e: unknown) {
         let errorMessage = "An unknown error occurred";
@@ -34,7 +34,7 @@ const LyricsPage: React.FC = () => {
       }
     };
 
-    fetchSong();
+    void fetchSong();
   }, [id]);
 
   if (loading) {
@@ -51,8 +51,8 @@ const LyricsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-extrabold text-center mb-4 text-primary dark:text-primary-light">{song.title}</h1>
-      <p className="text-center text-neutral-600 text-lg mb-6 dark:text-neutral-400">by {song.artist}</p>
+      <h1 className="text-4xl font-extrabold text-center mb-4 text-primary dark:text-primary-light">{String(song.title)}</h1>
+      <p className="text-center text-neutral-600 text-lg mb-6 dark:text-neutral-400">by {String(song.artist)}</p>
       
       <div className="bg-white p-8 rounded-lg shadow-lg typography dark:bg-neutral-800 dark:text-neutral-200">
         <pre className="whitespace-pre-wrap font-sans text-neutral-800 text-base leading-relaxed dark:text-neutral-200">{song.lyrics}</pre>

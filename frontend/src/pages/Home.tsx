@@ -43,9 +43,9 @@ const Home: React.FC = () => {
     const cacheKey = `songs-${queryParams.toString()}`;
 
     if (apiCache.has(cacheKey)) {
-      const cachedData = apiCache.get(cacheKey);
+      const cachedData: Song[] = apiCache.get(cacheKey) as Song[];
       if (append) {
-        setSongs(prevSongs => [...prevSongs, ...cachedData]);
+        setSongs((prevSongs: Song[]) => [...prevSongs, ...cachedData]);
       } else {
         setSongs(cachedData);
       }
@@ -60,13 +60,13 @@ const Home: React.FC = () => {
       console.log("Fetching from URL:", url);
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${String(response.status)}`);
       }
       const data: Song[] = await response.json();
       apiCache.set(cacheKey, data); // Store in cache
       
       if (append) {
-        setSongs(prevSongs => [...prevSongs, ...data]);
+        setSongs((prevSongs: Song[]) => [...prevSongs, ...data]);
       } else {
         setSongs(data);
       }
@@ -107,7 +107,7 @@ const Home: React.FC = () => {
           placeholder="Search by title or artist..."
           className="w-full py-3 pl-12 pr-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600 dark:focus:ring-primary-light"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => { setSearchTerm(e.target.value); }}
           aria-label="Search songs by title or artist"
         />
         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-neutral-400" size={20} aria-hidden="true" />
@@ -120,7 +120,7 @@ const Home: React.FC = () => {
             id="language-filter"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600 dark:focus:border-primary-light dark:focus:ring-primary-light"
             value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
+            onChange={(e) => { setSelectedLanguage(e.target.value); }}
           >
             <option value="">All Languages</option>
             <option value="swahili">Swahili</option>
@@ -135,7 +135,7 @@ const Home: React.FC = () => {
             id="category-filter"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600 dark:focus:border-primary-light dark:focus:ring-primary-light"
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => { setSelectedCategory(e.target.value); }}
           >
             <option value="">All Categories</option>
             <option value="praise">Praise & Worship</option>

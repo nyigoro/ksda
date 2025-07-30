@@ -22,7 +22,7 @@ const SongManagement: React.FC = () => {
     try {
       const response = await fetch(apiRoutes.songs);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${String(response.status)}`);
       }
       const data: Song[] = await response.json();
       setSongs(data);

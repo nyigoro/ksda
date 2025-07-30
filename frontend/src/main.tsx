@@ -4,7 +4,9 @@ import './index.css'
 import App from './App' 
 import { ToastProvider } from './components/ToastProvider';
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Failed to find the root element');
+createRoot(rootElement).render(
   <StrictMode>
     <ToastProvider>
       <App />

@@ -16,7 +16,6 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
       setIsVisible(false);
       setTimeout(() => {
         onClose(id);
-        return undefined;
       }, 300); // Allow fade-out animation
     }, 5000); // Toast visible for 5 seconds
 

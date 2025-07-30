@@ -7,12 +7,12 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
-    const id = uuidv4();
-    setToasts(prevToasts => [...prevToasts, { id, message, type }]);
+    const id: string = uuidv4();
+    setToasts((prevToasts: ToastMessage[]) => [...prevToasts, { id, message, type }]);
   }, []);
 
   const removeToast = useCallback((id: string) => {
-    setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
+    setToasts((prevToasts: ToastMessage[]) => prevToasts.filter((toast: ToastMessage) => toast.id !== id));
   }, []);
 
   return (

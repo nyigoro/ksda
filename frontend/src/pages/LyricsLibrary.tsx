@@ -19,7 +19,7 @@ const LyricsLibrary: React.FC = () => {
       try {
         const response = await fetch('/api/songs');
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${String(response.status)}`);
         }
         const data: Song[] = await response.json();
         setSongs(data);

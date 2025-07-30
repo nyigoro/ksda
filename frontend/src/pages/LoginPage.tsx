@@ -51,14 +51,14 @@ const LoginPage: React.FC = () => {
           <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-neutral-300" htmlFor="username">Username</label>
           <input
             className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600 dark:focus:border-primary-light dark:focus:ring-primary-light"
-            id="username" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required
+            id="username" type="text" placeholder="Username" value={username} onChange={(e) => { setUsername(e.target.value); }} required
           />
         </div>
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-neutral-300" htmlFor="password">Password</label>
           <input
             className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600 dark:focus:border-primary-light dark:focus:ring-primary-light"
-            id="password" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required
+            id="password" type="password" placeholder="Password" value={password} onChange={(e) => { setPassword(e.target.value); }} required
           />
         </div>
         <div className="flex items-center justify-between">
