@@ -62,7 +62,7 @@ const Home: React.FC = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
+      const data: Song[] = await response.json();
       apiCache.set(cacheKey, data); // Store in cache
       
       if (append) {
@@ -87,13 +87,13 @@ const Home: React.FC = () => {
     setOffset(0); // Reset offset when filters change
     setSongs([]); // Clear songs when filters change
     setHasMore(true); // Assume more songs when filters change
-    fetchSongs(0); // Initial fetch with filters
+    void fetchSongs(0); // Initial fetch with filters
   }, [fetchSongs, searchTerm, selectedLanguage, selectedCategory]); // Add dependencies
 
   const handleLoadMore = () => {
     const newOffset = offset + SONGS_PER_PAGE;
     setOffset(newOffset);
-    fetchSongs(newOffset, true);
+    void fetchSongs(newOffset, true);
   };
 
   // Filtered songs logic is now handled by the API call

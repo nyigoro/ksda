@@ -21,7 +21,7 @@ const LyricsLibrary: React.FC = () => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
+        const data: Song[] = await response.json();
         setSongs(data);
       } catch (e: unknown) {
         let errorMessage = "An unknown error occurred";
@@ -34,7 +34,7 @@ const LyricsLibrary: React.FC = () => {
       }
     };
 
-    fetchSongs();
+    void fetchSongs();
   }, []);
 
   if (loading) {

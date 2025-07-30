@@ -18,8 +18,9 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('SW registered: ', registration);
       })
-      .catch(registrationError => {
-        console.log('SW registration failed: ', registrationError);
+      .catch((registrationError: unknown) => {
+        const errorMessage = registrationError instanceof Error ? registrationError.message : 'Unknown error during service worker registration.';
+        console.log('SW registration failed: ', errorMessage);
       });
   });
 }

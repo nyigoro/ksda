@@ -1,6 +1,14 @@
-import { useContext } from 'react';
-import { ToastContextType } from '../components/ToastProvider';
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
+
+interface ToastMessage {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+}
+
+interface ToastContextType {
+  showToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning') => void;
+}
 
 export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 

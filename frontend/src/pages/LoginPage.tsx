@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
         body: JSON.stringify({ username, password }),
       });
 
-      const result = await response.json();
+      const result: { token?: string; error?: string } = await response.json();
 
       if (response.ok) {
         localStorage.setItem('api_secret', result.token);
@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
           {error}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-sm px-8 pt-6 pb-8 mb-4 dark:bg-neutral-800">
+      <form onSubmit={(e) => { void handleSubmit(e); }} className="bg-white shadow-md rounded-sm px-8 pt-6 pb-8 mb-4 dark:bg-neutral-800">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-neutral-300" htmlFor="username">Username</label>
           <input

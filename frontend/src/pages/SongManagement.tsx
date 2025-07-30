@@ -24,7 +24,7 @@ const SongManagement: React.FC = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
+      const data: Song[] = await response.json();
       setSongs(data);
     } catch (e: unknown) {
       let errorMessage = "An unknown error occurred";
@@ -38,7 +38,7 @@ const SongManagement: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchSongs();
+    void fetchSongs();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -52,9 +52,9 @@ const SongManagement: React.FC = () => {
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Song deleted successfully!' });
-        fetchSongs(); // Re-fetch songs after deletion
+        void fetchSongs(); // Re-fetch songs after deletion
       } else {
-        const result = await response.json();
+        const result: { error?: string; statusText?: string } = await response.json();
         setMessage({ type: 'error', text: `Failed to delete song: ${result.error || response.statusText}` });
       }
     } catch (e: unknown) {
@@ -107,7 +107,7 @@ const SongManagement: React.FC = () => {
                       <Edit size={20} />
                     </Link>
                     <button
-                      onClick={() => handleDelete(song.id)}
+                      onClick={() => { void handleDelete(song.id); }}
                       className="text-error hover:text-red-700 dark:text-error-light dark:hover:text-red-400"
                       aria-label={`Delete ${song.title}`}
                     >

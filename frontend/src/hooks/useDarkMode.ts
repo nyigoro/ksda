@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 
 export function useDarkMode() {
   // Initialize dark mode from localStorage or system preference
-  const [isDarkMode, setIsDarkMode] = useState(() => {
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     // Check localStorage first
     const stored = localStorage.getItem('darkMode');
     if (stored !== null) {
-      return JSON.parse(stored);
+      return JSON.parse(stored) as boolean;
     }
     
     // Fall back to system preference

@@ -21,24 +21,24 @@ export default function SongDetails() {
   const [relatedSongs, setRelatedSongs] = useState<Song[]>([]); // New state for related songs
 
   useEffect(() => {
-    fetch(`/api/songs/${id}`)
+    void fetch(`/api/songs/${id}`)
       .then(res => res.json())
-      .then(data => {
+      .then((data: Song) => {
         setSong(data);
         setLoading(false);
         // Simulate fetching like status from backend
         setIsLiked(localStorage.getItem(`liked-song-${id}`) === 'true');
         // Check if song is in favorites
-        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const favorites: Song[] = JSON.parse(localStorage.getItem('favorites') || '[]');
         setIsFavorite(favorites.some((favSong: Song) => favSong.id === data.id));
       });
 
     // Simulate fetching related songs
     // In a real app, you'd make an API call like `/songs/${id}/related`
     // For now, let's just return some dummy data or a subset of existing songs
-    fetch('/api/songs') // Fetch all songs for simulation
+    void fetch('/api/songs') // Fetch all songs for simulation
       .then(res => res.json())
-      .then(allSongs => {
+      .then((allSongs: Song[]) => {
         const filteredRelated = allSongs.filter((s: Song) => s.id !== id).slice(0, 3); // Get 3 random related songs
         setRelatedSongs(filteredRelated);
       });
@@ -59,7 +59,7 @@ export default function SongDetails() {
   const handleFavoriteToggle = () => {
     setIsFavorite(prevIsFavorite => {
       const newIsFavorite = !prevIsFavorite;
-      let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      let favorites: Song[] = JSON.parse(localStorage.getItem('favorites') || '[]');
       if (newIsFavorite) {
         if (song && !favorites.some((favSong: Song) => favSong.id === song.id)) {
           favorites.push(song);

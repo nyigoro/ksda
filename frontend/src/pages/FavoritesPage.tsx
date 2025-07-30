@@ -14,7 +14,7 @@ const FavoritesPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const storedFavorites: Song[] = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavoriteSongs(storedFavorites);
     setLoading(false);
   }, []);
