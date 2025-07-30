@@ -23,6 +23,7 @@ interface Song {
   title: string;
   artist?: string;
   youtube_link?: string;
+  audio_link?: string;
   lyrics?: string;
   composer?: string;
   language?: string;
@@ -73,7 +74,8 @@ songs.get('/songs', async (c) => {
     return c.json(results || []);
   } catch (e: unknown) {
     console.error('Error fetching songs:', e);
-    return c.json({ error: 'Failed to retrieve songs', details: e.message }, 500);
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+    return c.json({ error: 'Failed to retrieve songs', details: errorMessage }, 500);
   }
 });
 
@@ -88,7 +90,8 @@ songs.get('/song/:id', async (c) => {
     return c.json(results[0]);
   } catch (e: unknown) {
     console.error(`Error fetching song ${c.req.param('id')}:`, e);
-    return c.json({ error: 'Failed to retrieve song', details: e.message }, 500);
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+    return c.json({ error: 'Failed to retrieve song', details: errorMessage }, 500);
   }
 });
 
@@ -102,15 +105,15 @@ songs.post('/songs', authMiddleware, async (c) => {
       return c.json({ error: 'Invalid input', details: validation.error.flatten() }, 400);
     }
 
-    const { title, artist, youtube_link, lyrics, composer, language, region, category, tags, duration, is_featured, status } = validation.data;
+    const { title, artist, youtube_link, audio_link, lyrics, composer, language, region, category, tags, duration, is_featured, status } = validation.data;
 
     const id = crypto.randomUUID();
     const query = `
-      INSERT INTO songs (id, title, artist, youtube_link, lyrics, composer, language, region, category, tags, duration, is_featured, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO songs (id, title, artist, youtube_link, audio_link, lyrics, composer, language, region, category, tags, duration, is_featured, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     await c.env.DB.prepare(query).bind(
-      id, title, artist, youtube_link, lyrics, composer, language,
+      id, title, artist, youtube_link, audio_link, lyrics, composer, language,
       region, category, tags, duration, is_featured, status
     ).run();
 
@@ -119,7 +122,8 @@ songs.post('/songs', authMiddleware, async (c) => {
     return c.json(newSong, 201);
   } catch (e: unknown) {
     console.error('Error creating song:', e);
-    return c.json({ error: 'Failed to create song', details: e.message }, 500);
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+    return c.json({ error: 'Failed to create song', details: errorMessage }, 500);
   }
 });
 
@@ -140,6 +144,7 @@ songs.put('/song/:id', authMiddleware, async (c) => {
       title,
       artist,
       youtube_link,
+      audio_link,
       lyrics,
       composer,
       language,
@@ -154,12 +159,12 @@ songs.put('/song/:id', authMiddleware, async (c) => {
     // Run update query
     const query = `
       UPDATE songs
-      SET title = ?, artist = ?, youtube_link = ?, lyrics = ?, composer = ?, language = ?, region = ?, category = ?, tags = ?, duration = ?, is_featured = ?, status = ?
+      SET title = ?, artist = ?, youtube_link = ?, audio_link = ?, lyrics = ?, composer = ?, language = ?, region = ?, category = ?, tags = ?, duration = ?, is_featured = ?, status = ?
       WHERE id = ?
     `;
 
     const result = await c.env.DB.prepare(query).bind(
-      title, artist, youtube_link, lyrics, composer, language,
+      title, artist, youtube_link, audio_link, lyrics, composer, language,
       region, category, tags, duration, is_featured, status, id
     ).run();
 
@@ -173,7 +178,8 @@ songs.put('/song/:id', authMiddleware, async (c) => {
     return c.json(updatedSong);
   } catch (e: unknown) {
     console.error(`Error updating song ${c.req.param('id')}:`, e);
-    return c.json({ error: 'Failed to update song', details: (e as Error).message }, 500);
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+    return c.json({ error: 'Failed to update song', details: errorMessage }, 500);
   }
 });
 

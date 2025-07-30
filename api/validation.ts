@@ -4,6 +4,7 @@ export const songSchema = z.object({
   title: z.string().trim().min(1, { message: 'Title is required' }),
   artist: z.string().trim().optional(),
   youtube_link: z.string().trim().url({ message: 'Invalid YouTube link format' }).optional().or(z.literal('')),
+  audio_link: z.string().trim().url({ message: 'Invalid audio link format' }).optional().or(z.literal('')),
   lyrics: z.string().trim().optional(),
   composer: z.string().trim().optional(),
   language: z.string().trim().optional(),

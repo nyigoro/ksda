@@ -4,7 +4,8 @@ interface Song {
   id: string;
   title: string;
   artist: string;
-  youtube_link: string;
+  youtube_link?: string;
+  audio_link?: string;
 }
 
 const AudioLibrary: React.FC = () => {
@@ -55,25 +56,32 @@ const AudioLibrary: React.FC = () => {
         {songs.length === 0 ? (
           <div className="col-span-full text-center py-8 text-neutral-600 dark:text-neutral-100">
             <p className="text-xl font-semibold mb-2">No audio available yet.</p>
-            <p>Add songs with YouTube links to build your audio library!</p>
+            <p>Add songs with YouTube or audio links to build your audio library!</p>
           </div>
         ) : (
-          songs.map(song => song.youtube_link && (
+          songs.map(song => (
             <div key={song.id} className="bg-white p-6 rounded-lg shadow-md dark:bg-neutral-800">
               <h2 className="text-2xl font-bold mb-2 text-secondary dark:text-secondary-light">{song.title}</h2>
               <p className="text-neutral-600 text-sm mb-4 dark:text-neutral-400">by {song.artist}</p>
-              <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
-                  title={`YouTube audio player for ${song.title}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                ></iframe>
-              </div>
+              {song.audio_link ? (
+                <audio controls className="w-full">
+                  <source src={song.audio_link} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              ) : song.youtube_link && (
+                <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
+                    title={`YouTube audio player for ${song.title}`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  ></iframe>
+                </div>
+              )}
             </div>
           ))
         )}

@@ -1,30 +1,49 @@
-// src/pages/AddSong.tsx
-
 import { apiRoutes } from '../utils/apiRoutes';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+interface Song {
+  id: string;
+  title: string;
+  artist?: string;
+  youtube_link?: string;
+  audio_link?: string;
+  lyrics?: string;
+  composer?: string;
+  language?: string;
+  region?: string;
+  category?: string;
+  tags?: string;
+  duration?: number;
+  is_featured?: boolean;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
 
 const AddSong: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState('');
-  const [artist, setArtist] = useState('');
-  const [youtubeLink, setYoutubeLink] = useState('');
-  const [lyrics, setLyrics] = useState('');
-  const [composer, setComposer] = useState('');
-  const [language, setLanguage] = useState('swahili');
-  const [region, setRegion] = useState('');
-  const [category, setCategory] = useState('praise');
-  const [tags, setTags] = useState('');
+  const [title, setTitle] = useState<string>('');
+  const [artist, setArtist] = useState<string>('');
+  const [youtubeLink, setYoutubeLink] = useState<string>('');
+  const [audioLink, setAudioLink] = useState<string>('');
+  const [lyrics, setLyrics] = useState<string>('');
+  const [composer, setComposer] = useState<string>('');
+  const [language, setLanguage] = useState<string>('swahili');
+  const [region, setRegion] = useState<string>('');
+  const [category, setCategory] = useState<string>('praise');
+  const [tags, setTags] = useState<string>('');
   const [duration, setDuration] = useState<number | ''>('');
-  const [isFeatured, setIsFeatured] = useState(false);
-  const [status, setStatus] = useState('active');
+  const [isFeatured, setIsFeatured] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>('active');
   const [message, setMessage] = useState<{ type: string; text: string } | null>(null);
   const [loadingSong, setLoadingSong] = useState<boolean>(false);
 
   const [titleError, setTitleError] = useState<string | null>(null);
   const [youtubeLinkError, setYoutubeLinkError] = useState<string | null>(null);
+  const [audioLinkError, setAudioLinkError] = useState<string | null>(null);
   const [durationError, setDurationError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,24 +51,30 @@ const AddSong: React.FC = () => {
       setLoadingSong(true);
       fetch(apiRoutes.song(id))
         .then(res => res.json())
-        .then(data => {
-          setTitle(data.title || '');
-          setArtist(data.artist || '');
-          setYoutubeLink(data.youtube_link || '');
-          setLyrics(data.lyrics || '');
-          setComposer(data.composer || '');
-          setLanguage(data.language || 'swahili');
-          setRegion(data.region || '');
-          setCategory(data.category || 'praise');
-          setTags(data.tags ? data.tags.join(', ') : '');
-          setDuration(data.duration || '');
-          setIsFeatured(data.is_featured || false);
-          setStatus(data.status || 'active');
+        .then((data) => {
+          const songData = data as Song;
+          setTitle(songData.title || '');
+          setArtist(songData.artist || '');
+          setYoutubeLink(songData.youtube_link || '');
+          setAudioLink(songData.audio_link || '');
+          setLyrics(songData.lyrics || '');
+          setComposer(songData.composer || '');
+          setLanguage(songData.language || 'swahili');
+          setRegion(songData.region || '');
+          setCategory(songData.category || 'praise');
+          setTags(songData.tags || ''); // data.tags is already a string
+          setDuration(songData.duration || '');
+          setIsFeatured(songData.is_featured || false);
+          setStatus(songData.status || 'active');
           setLoadingSong(false);
         })
-        .catch(err => {
-          console.error("Failed to fetch song for editing:", err);
-          setMessage({ type: 'error', text: 'Failed to load song for editing.' });
+        .catch((e: unknown) => {
+          console.error("Failed to fetch song for editing:", e);
+          let errorMessage = "An unknown error occurred";
+          if (e instanceof Error) {
+            errorMessage = e.message;
+          }
+          setMessage({ type: 'error', text: `Failed to load song for editing: ${errorMessage}` });
           setLoadingSong(false);
         });
     }
@@ -70,6 +95,13 @@ const AddSong: React.FC = () => {
       isValid = false;
     } else {
       setYoutubeLinkError(null);
+    }
+
+    if (audioLink && !/^https?:\/\/.*/.test(audioLink)) {
+      setAudioLinkError('Please enter a valid audio link.');
+      isValid = false;
+    } else {
+      setAudioLinkError(null);
     }
 
     if (duration !== '' && (isNaN(Number(duration)) || Number(duration) <= 0)) {
@@ -95,6 +127,7 @@ const AddSong: React.FC = () => {
       title: title || null,
       artist: artist || null,
       youtube_link: youtubeLink || '',
+      audio_link: audioLink || '',
       lyrics: lyrics || null,
       composer: composer || null,
       language: language || null,
@@ -126,7 +159,7 @@ const AddSong: React.FC = () => {
         body: JSON.stringify(songData),
       });
 
-      const result = await response.json();
+      const result: { error?: string, statusText?: string } = await response.json();
 
       if (response.ok) {
         setMessage({ type: 'success', text: `Song ${id ? 'updated' : 'added'} successfully!` });
@@ -134,6 +167,7 @@ const AddSong: React.FC = () => {
           setTitle('');
           setArtist('');
           setYoutubeLink('');
+          setAudioLink('');
           setLyrics('');
           setComposer('');
           setLanguage('swahili');
@@ -168,22 +202,28 @@ const AddSong: React.FC = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-4">
         <div>
           <label htmlFor="title" className="block font-medium">Title *</label>
-          <input type="text" id="title" value={title} onChange={e => setTitle(e.target.value)} className="input" />
+          <input type="text" id="title" value={title} onChange={(e) => { setTitle(e.target.value); }} className="input" />
           {titleError && <p className="text-sm text-red-500">{titleError}</p>}
         </div>
 
         <div>
           <label htmlFor="youtubeLink" className="block font-medium">YouTube Link</label>
-          <input type="url" id="youtubeLink" value={youtubeLink} onChange={e => setYoutubeLink(e.target.value)} className="input" />
+          <input type="url" id="youtubeLink" value={youtubeLink} onChange={(e) => { setYoutubeLink(e.target.value); }} className="input" />
           {youtubeLinkError && <p className="text-sm text-red-500">{youtubeLinkError}</p>}
         </div>
 
         <div>
+          <label htmlFor="audioLink" className="block font-medium">Audio Link</label>
+          <input type="url" id="audioLink" value={audioLink} onChange={(e) => { setAudioLink(e.target.value); }} className="input" />
+          {audioLinkError && <p className="text-sm text-red-500">{audioLinkError}</p>}
+        </div>
+
+        <div>
           <label htmlFor="duration" className="block font-medium">Duration (seconds)</label>
-          <input type="number" id="duration" value={duration} onChange={e => setDuration(e.target.value === '' ? '' : Number(e.target.value))} className="input" />
+          <input type="number" id="duration" value={duration} onChange={(e) => { setDuration(e.target.value === '' ? '' : Number(e.target.value)); }} className="input" />
           {durationError && <p className="text-sm text-red-500">{durationError}</p>}
         </div>
 
