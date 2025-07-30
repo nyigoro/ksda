@@ -53,7 +53,7 @@ const AudioLibrary: React.FC = () => {
       <h1 className="text-4xl font-extrabold text-center mb-8 text-primary dark:text-primary-light">Audio Library</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {songs.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="col-span-full text-center py-8 text-neutral-600 dark:text-neutral-100">
             <p className="text-xl font-semibold mb-2">No audio available yet.</p>
             <p>Add songs with YouTube links to build your audio library!</p>
           </div>

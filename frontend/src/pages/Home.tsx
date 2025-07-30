@@ -1,3 +1,4 @@
+import { apiRoutes } from '../utils/apiRoutes';
 import React, { useEffect, useState, useCallback } from 'react';
 import { Search } from 'lucide-react';
 import SongList from '../components/SongList';
@@ -55,7 +56,7 @@ const Home: React.FC = () => {
 
     setLoading(true);
     try {
-      const url = `/api/songs?${queryParams.toString()}`;
+      const url = `${apiRoutes.songs}?${queryParams.toString()}`;
       console.log("Fetching from URL:", url);
       const response = await fetch(url);
       if (!response.ok) {

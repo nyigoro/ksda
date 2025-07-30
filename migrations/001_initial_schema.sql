@@ -132,6 +132,8 @@ CREATE INDEX idx_songs_artist ON songs(artist);
 CREATE INDEX idx_song_contributions_song_id ON song_contributions(song_id);
 CREATE INDEX idx_song_contributions_contributor_id ON song_contributions(contributor_id);
 
+CREATE INDEX idx_songs_created_at ON songs(created_at);
+
 -- Full-text search index (if supported)
 CREATE VIRTUAL TABLE songs_fts USING fts5(
   title, 

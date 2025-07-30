@@ -18,6 +18,19 @@
   --color-primary-900: #312e81;
   --color-primary-950: #1e1b4b;
 
+  /* Secondary color scale */
+  --color-secondary-50: #eef2ff;
+  --color-secondary-100: #e0e7ff;
+  --color-secondary-200: #c7d2fe;
+  --color-secondary-300: #a5b4fc;
+  --color-secondary-400: #818cf8;
+  --color-secondary-500: #6366f1;
+  --color-secondary-600: #4f46e5;
+  --color-secondary-700: #4338ca;
+  --color-secondary-800: #3730a3;
+  --color-secondary-900: #312e81;
+  --color-secondary-950: #1e1b4b;
+
   /* Accent color scale */
   --color-accent-50: #fffbeb;
   --color-accent-100: #fef3c7;
@@ -44,15 +57,23 @@
   --color-neutral-900: #111827;
   --color-neutral-950: #030712;
 
-  /* Base colors */
-  --color-background: #ffffff;
-  --color-foreground: #111827;
+  /* Base colors - Light mode */
+  --color-base-50: #f9fafb;
+  --color-base-100: #f3f4f6;
+  --color-base-200: #e5e7eb;
+  --color-base-300: #d1d5db;
+
+  /* Base colors - Dark mode */
+  --color-base-dark-50: #030712;
+  --color-base-dark-100: #111827;
+  --color-base-dark-200: #1f2937;
+  --color-base-dark-300: #374151;
 
   /* Semantic colors */
-  --color-info: #3b82f6;
-  --color-success: #10b981;
-  --color-warning: #f97316;
-  --color-error: #ef4444;
+  --color-info-500: #3b82f6;
+  --color-success-500: #10b981;
+  --color-warning-500: #f97316;
+  --color-error-500: #ef4444;
 
   /* Font families */
   --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -72,14 +93,6 @@
   --radius-lg: 0.5rem;
 }
 
-/* Dark mode variants */
-html.dark {
-  --color-background: #030712;
-  --color-foreground: #f3f4f6;
-  --color-neutral-200: #1f2937;
-  --color-neutral-700: #374151;
-}
-
 /* Global base styles */
 @layer base {
   /* Reset and normalize */
@@ -89,7 +102,7 @@ html.dark {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: var(--color-neutral-200);
+    border-color: theme('colors.neutral.200');
   }
 
   ::before,
@@ -103,14 +116,27 @@ html.dark {
     -moz-tab-size: 4;
     tab-size: 4;
     font-family: theme('fontFamily.sans');
+    font-feature-settings: theme('fontFamily.sans[1].fontFeatureSettings', normal);
+    font-variation-settings: theme('fontFamily.sans[1].fontVariationSettings', normal);
   }
 
   body {
     margin: 0;
     line-height: inherit;
     font-family: var(--font-family-sans);
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    @apply bg-neutral-50 text-neutral-900;
+  }
+
+  /* Manual dark mode support using .dark class */
+  .dark body {
+    @apply bg-neutral-900 text-neutral-100;
+  }
+
+  /* Automatic dark mode support */
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-neutral-900 text-neutral-100;
+    }
   }
 
   /* Typography */
@@ -155,8 +181,29 @@ html.dark {
 
   /* Focus styles */
   :focus-visible {
-    outline: 2px solid var(--color-primary-500);
+    outline: 2px solid theme('colors.primary.500');
     outline-offset: 2px;
+  }
+}
+
+/* Custom utilities layer */
+@layer utilities {
+  /* Custom color utilities that use your theme variables */
+  .text-primary { color: theme('colors.primary.500'); }
+  .text-secondary { color: theme('colors.secondary.500'); }
+  .text-accent { color: theme('colors.accent.500'); }
+  
+  .bg-primary { background-color: theme('colors.primary.500'); }
+  .bg-secondary { background-color: theme('colors.secondary.500'); }
+  .bg-accent { background-color: theme('colors.accent.500'); }
+  
+  .border-primary { border-color: theme('colors.primary.500'); }
+  .border-secondary { border-color: theme('colors.secondary.500'); }
+  .border-accent { border-color: theme('colors.accent.500'); }
+
+  /* Focus utilities */
+  .focus-primary:focus {
+    outline-color: theme('colors.primary.500');
   }
 }
 
@@ -171,9 +218,80 @@ html.dark {
 
   .btn-primary {
     @apply bg-primary-500 text-white hover:bg-primary-600;
-    @apply dark:bg-primary-600 dark:hover:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary-500 text-white hover:bg-secondary-600;
+  }
+
+  .card {
+    @apply rounded-lg border border-neutral-200 bg-white p-6 shadow-sm;
+  }
+
+  .dark .card {
+    @apply border-neutral-700 bg-neutral-800;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      @apply border-neutral-700 bg-neutral-800;
+    }
+  }
+
+  /* Dark mode text fixes for song cards */
+  .song-card-title {
+    @apply text-neutral-900;
+  }
+
+  .dark .song-card-title {
+    @apply text-neutral-100;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .song-card-title {
+      @apply text-neutral-100;
+    }
+  }
+
+  .song-card-artist {
+    @apply text-neutral-600;
+  }
+
+  .dark .song-card-artist {
+    @apply text-neutral-300;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .song-card-artist {
+      @apply text-neutral-300;
+    }
+  }
+
+  .song-card-lyrics {
+    @apply text-neutral-700;
+  }
+
+  .dark .song-card-lyrics {
+    @apply text-neutral-200;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .song-card-lyrics {
+      @apply text-neutral-200;
+    }
+  }
+
+  .song-card-link {
+    @apply text-primary-500;
+  }
+
+  .dark .song-card-link {
+    @apply text-primary-400;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .song-card-link {
+      @apply text-primary-400;
+    }
   }
 }
-
-/* Force a rebuild to ensure aspect ratio plugin is processed */
-/* This comment can be removed after verification */

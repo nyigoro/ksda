@@ -7,6 +7,7 @@ binding = "DB"
 database_name = "kenyan-sda-songs"
 database_id = "8e492240-4004-41a9-a234-13402300c1f0"
 
-
+[vars]
+API_SECRET = "password" 
 
 

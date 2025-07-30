@@ -15,6 +15,16 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
+    setupFiles: ['frontend/src/setupTests.ts'],
+    alias: {
+      '@/': new URL('./src/', import.meta.url).pathname,
+      'api/': new URL('../api/', import.meta.url).pathname,
+    },
+  },
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
   },
 })

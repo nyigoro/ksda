@@ -1,3 +1,4 @@
+import { apiRoutes } from '../utils/apiRoutes';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Edit, Trash2 } from 'lucide-react';
@@ -19,7 +20,7 @@ const SongManagement: React.FC = () => {
   const fetchSongs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/songs');
+      const response = await fetch(apiRoutes.songs);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -45,7 +46,7 @@ const SongManagement: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch(`/api/songs/${id}`, {
+            const response = await fetch(apiRoutes.song(id), {
         method: 'DELETE',
       });
 
@@ -77,12 +78,12 @@ const SongManagement: React.FC = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-4xl font-extrabold text-center mb-8 text-primary dark:text-primary-light">Manage Songs</h1>
       {message && (
-        <div className={`p-3 mb-4 rounded-sm text-center ${message.type === 'success' ? 'bg-success/10 text-success' : 'bg-error/10 text-error'} dark:text-neutral-200 dark:bg-neutral-700`}>
+        <div className={`p-3 mb-4 rounded-sm text-center ${message.type === 'success' ? 'bg-success/10 text-success' : 'bg-error/10 text-error'} dark:text-neutral-100 dark:bg-neutral-700`}>
           {message.text}
         </div>
       )}
       {songs.length === 0 ? (
-        <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+        <div className="text-center py-8 text-neutral-600 dark:text-neutral-100">
           <p className="text-xl font-semibold mb-2">No songs to manage.</p>
           <p>Add new songs to see them here.</p>
         </div>

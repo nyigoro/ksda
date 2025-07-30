@@ -14,7 +14,10 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => onClose(id), 300); // Allow fade-out animation
+      setTimeout(() => {
+        onClose(id);
+        return undefined;
+      }, 300); // Allow fade-out animation
     }, 5000); // Toast visible for 5 seconds
 
     return () => clearTimeout(timer);
@@ -46,7 +49,7 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
         <span className="mr-2"><Icon /></span>
         <span>{message}</span>
       </div>
-      <button onClick={() => onClose(id)} className="ml-4 text-current hover:opacity-75 focus:outline-none">
+      <button onClick={() => { onClose(id); }} className="ml-4 text-current hover:opacity-75 focus:outline-none">
         <XCircle size={18} />
       </button>
     </div>
