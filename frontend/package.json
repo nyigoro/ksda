@@ -12,6 +12,8 @@
     "db:migrate": "wrangler d1 execute ksda-songs-db --file=./db/migrations/001_initial_schema.sql",
     "db:seed": "wrangler d1 execute ksda-songs-db --file=./db/seed.sql",
     "lint": "eslint .",
+    "generate-types": "wrangler types",
+    "type-check": "generate-types && tsc",
     "format": "prettier --write .",
     "test": "vitest"
   },
