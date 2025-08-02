@@ -21,55 +21,52 @@ export default function SongDetails() {
   const [relatedSongs, setRelatedSongs] = useState<Song[]>([]); // New state for related songs
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
-
-    void fetch(`/api/songs/${id}`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${String(res.status)}`);
-        }
-        return res.json();
-      })
-      .then((data: unknown) => {
-        if (typeof data === 'object' && data !== null && 'id' in data && 'title' in data && 'artist' in data && 'youtube_link' in data && typeof data.youtube_link === 'string' && 'lyrics' in data) {
-          const songData = data as Song;
-          setSong(songData);
+    if (id) {
+      setLoading(true);
+      void fetch(`/api/songs/${id}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${String(res.status)}`);
+          }
+          return res.json();
+        })
+        .then((data: unknown) => {
+          if (typeof data === 'object' && data !== null && 'id' in data && 'title' in data && 'artist' in data && 'youtube_link' in data && typeof data.youtube_link === 'string' && 'lyrics' in data) {
+            const songData = data as Song;
+            setSong(songData);
+            setLoading(false);
+            setIsLiked(localStorage.getItem(`liked-song-${id}`) === 'true');
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]') as Song[];
+            setIsFavorite(favorites.some((favSong: Song) => favSong.id === songData.id));
+          } else {
+            throw new Error("Invalid song data received");
+          }
+        })
+        .catch((error: unknown) => {
+          console.error("Error fetching song details:", error);
           setLoading(false);
-          setIsLiked(localStorage.getItem(`liked-song-${id}`) === 'true');
-          const favorites = JSON.parse(localStorage.getItem('favorites') || '[]') as Song[];
-          setIsFavorite(favorites.some((favSong: Song) => favSong.id === songData.id));
-        } else {
-          throw new Error("Invalid song data received");
-        }
-      })
-      .catch((error: unknown) => {
-        console.error("Error fetching song details:", error);
-        setLoading(false);
-      });
+        });
 
-    void fetch('/api/songs')
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${String(res.status)}`);
-        }
-        return res.json();
-      })
-      .then((allSongs: unknown) => {
-        if (Array.isArray(allSongs) && allSongs.every(item => typeof item === 'object' && item !== null && 'id' in item)) {
-          const typedAllSongs = allSongs as Song[];
-          const filteredRelated = typedAllSongs.filter((s: Song) => s.id !== id).slice(0, 3);
-          setRelatedSongs(filteredRelated);
-        } else {
-          throw new Error("Invalid all songs data received");
-        }
-      })
-      .catch((error: unknown) => {
-        console.error("Error fetching related songs:", error);
-      });
-
+      void fetch('/api/songs')
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${String(res.status)}`);
+          }
+          return res.json();
+        })
+        .then((allSongs: unknown) => {
+          if (Array.isArray(allSongs) && allSongs.every(item => typeof item === 'object' && item !== null && 'id' in item)) {
+            const typedAllSongs = allSongs as Song[];
+            const filteredRelated = typedAllSongs.filter((s: Song) => s.id !== id).slice(0, 3);
+            setRelatedSongs(filteredRelated);
+          } else {
+            throw new Error("Invalid all songs data received");
+          }
+        })
+        .catch((error: unknown) => {
+          console.error("Error fetching related songs:", error);
+        });
+    }
   }, [id]);
 
   const handleLikeToggle = () => {
@@ -78,7 +75,9 @@ export default function SongDetails() {
       // Simulate API call to update like status
       // In a real app, you'd send a POST/PUT request to your backend
       console.log(`Song ${song?.title || ''} ${newIsLiked ? 'liked' : 'unliked'}`);
-      localStorage.setItem(`liked-song-${id}`, String(newIsLiked));
+      if (id) {
+        localStorage.setItem(`liked-song-${id}`, String(newIsLiked));
+      }
       return newIsLiked;
     });
   };
@@ -100,12 +99,14 @@ export default function SongDetails() {
   };
 
   if (loading) return <p className="p-4 text-info">Loading...</p>;
-  if (!song?.id) return <p className="p-4 text-error">Song not found.</p>;
+  if (!song) return <p className="p-4 text-error">Song not found.</p>;
+
+  const link = `/songs/${song.id}`;
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-lg shadow-lg dark:bg-neutral-800">
-      <h1 className="text-4xl font-extrabold mb-2 text-primary dark:text-primary-light">{String(song.title)}</h1>
-      <p className="text-neutral-600 text-lg mb-4 dark:text-neutral-400">by {String(song.artist)}</p>
+      <h1 className="text-4xl font-extrabold mb-2 text-primary dark:text-primary-light">{song.title}</h1>
+      <p className="text-neutral-600 text-lg mb-4 dark:text-neutral-400">by {song.artist}</p>
 
       {song.youtube_link && (
         <div className="aspect-w-16 aspect-h-9 mb-6 rounded-lg overflow-hidden">
@@ -122,7 +123,7 @@ export default function SongDetails() {
       )}
 
       <div className="flex justify-center space-x-4 mt-8">
-        <Link to={`/songs/${song.id ?? "unknown"}/lyrics`} className="btn btn-primary" aria-label={`View full lyrics for ${song.title}`}>
+        <Link to={link} className="btn btn-primary" aria-label={`View full lyrics for ${song.title}`}>
           View Full Lyrics
         </Link>
         <button
