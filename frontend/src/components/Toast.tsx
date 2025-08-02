@@ -19,7 +19,7 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
       }, 300); // Allow fade-out animation
     }, 5000); // Toast visible for 5 seconds
 
-    return () => clearTimeout(timer);
+    return () => { clearTimeout(timer); };
   }, [id, onClose]);
 
   const typeClasses = {

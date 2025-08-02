@@ -1,13 +1,14 @@
 import { createContext, useContext } from 'react';
 
-interface ToastMessage {
+export interface ToastMessage {
   id: string;
   message: string;
   type: 'success' | 'error' | 'info' | 'warning';
 }
 
 interface ToastContextType {
-  showToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning') => void;
+  addToast: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void;
+  removeToast: (id: string) => void;
 }
 
 export const ToastContext = createContext<ToastContextType | undefined>(undefined);

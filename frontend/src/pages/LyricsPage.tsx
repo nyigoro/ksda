@@ -15,6 +15,12 @@ const LyricsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) {
+      setError("Song ID is missing.");
+      setLoading(false);
+      return;
+    }
+
     const fetchSong = async () => {
       try {
         const response = await fetch(`/api/songs/${id}`);

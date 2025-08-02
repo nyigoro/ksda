@@ -21,26 +21,53 @@ export default function SongDetails() {
   const [relatedSongs, setRelatedSongs] = useState<Song[]>([]); // New state for related songs
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
     void fetch(`/api/songs/${id}`)
-      .then(res => res.json())
-      .then((data: Song) => {
-        setSong(data);
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${String(res.status)}`);
+        }
+        return res.json();
+      })
+      .then((data: unknown) => {
+        if (typeof data === 'object' && data !== null && 'id' in data && 'title' in data && 'artist' in data && 'youtube_link' in data && typeof data.youtube_link === 'string' && 'lyrics' in data) {
+          const songData = data as Song;
+          setSong(songData);
+          setLoading(false);
+          setIsLiked(localStorage.getItem(`liked-song-${id}`) === 'true');
+          const favorites = JSON.parse(localStorage.getItem('favorites') || '[]') as Song[];
+          setIsFavorite(favorites.some((favSong: Song) => favSong.id === songData.id));
+        } else {
+          throw new Error("Invalid song data received");
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Error fetching song details:", error);
         setLoading(false);
-        // Simulate fetching like status from backend
-        setIsLiked(localStorage.getItem(`liked-song-${id}`) === 'true');
-        // Check if song is in favorites
-        const favorites: Song[] = JSON.parse(localStorage.getItem('favorites') || '[]');
-        setIsFavorite(favorites.some((favSong: Song) => favSong.id === data.id));
       });
 
-    // Simulate fetching related songs
-    // In a real app, you'd make an API call like `/songs/${id}/related`
-    // For now, let's just return some dummy data or a subset of existing songs
-    void fetch('/api/songs') // Fetch all songs for simulation
-      .then(res => res.json())
-      .then((allSongs: Song[]) => {
-        const filteredRelated = allSongs.filter((s: Song) => s.id !== id).slice(0, 3); // Get 3 random related songs
-        setRelatedSongs(filteredRelated);
+    void fetch('/api/songs')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${String(res.status)}`);
+        }
+        return res.json();
+      })
+      .then((allSongs: unknown) => {
+        if (Array.isArray(allSongs) && allSongs.every(item => typeof item === 'object' && item !== null && 'id' in item)) {
+          const typedAllSongs = allSongs as Song[];
+          const filteredRelated = typedAllSongs.filter((s: Song) => s.id !== id).slice(0, 3);
+          setRelatedSongs(filteredRelated);
+        } else {
+          throw new Error("Invalid all songs data received");
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Error fetching related songs:", error);
       });
 
   }, [id]);
@@ -59,7 +86,7 @@ export default function SongDetails() {
   const handleFavoriteToggle = () => {
     setIsFavorite(prevIsFavorite => {
       const newIsFavorite = !prevIsFavorite;
-      let favorites: Song[] = JSON.parse(localStorage.getItem('favorites') || '[]');
+      let favorites: Song[] = JSON.parse(localStorage.getItem('favorites') || '[]') as Song[];
       if (newIsFavorite) {
         if (song && !favorites.some((favSong: Song) => favSong.id === song.id)) {
           favorites.push(song);
@@ -73,7 +100,7 @@ export default function SongDetails() {
   };
 
   if (loading) return <p className="p-4 text-info">Loading...</p>;
-  if (!song) return <p className="p-4 text-error">Song not found.</p>;
+  if (!song?.id) return <p className="p-4 text-error">Song not found.</p>;
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-lg shadow-lg dark:bg-neutral-800">
@@ -84,7 +111,7 @@ export default function SongDetails() {
         <div className="aspect-w-16 aspect-h-9 mb-6 rounded-lg overflow-hidden">
           <iframe
             width="100%"
-            src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link || '')}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
+            src={`https://www.youtube.com/embed/${extractYouTubeID(song.youtube_link)}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&autoplay=0`}
             title={`YouTube video player for ${song.title}`}
             
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -95,7 +122,7 @@ export default function SongDetails() {
       )}
 
       <div className="flex justify-center space-x-4 mt-8">
-        <Link to={`/songs/${song.id}/lyrics`} className="btn btn-primary" aria-label={`View full lyrics for ${song.title}`}>
+        <Link to={`/songs/${song.id ?? "unknown"}/lyrics`} className="btn btn-primary" aria-label={`View full lyrics for ${song.title}`}>
           View Full Lyrics
         </Link>
         <button
